@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8.0 # This specifies the MySQL version
+    container_name: mysql_book_db
+    environment:
+      MYSQL_ROOT_PASSWORD: Praisejah_root # Replace with a secure password
+      MYSQL_DATABASE: library_db # Replace with your desired database name
+      MYSQL_USER: Praisejah # Replace with your desired user name
+      MYSQL_PASSWORD: password # Replace with a secure password
+    ports:
+      - "3306:3306" # Maps MySQL's default port 3306 to the host machine
+    volumes:
+      - mysql_data:/var/lib/mysql # Persists data across container restarts
+
+volumes:
+  mysql_data:
