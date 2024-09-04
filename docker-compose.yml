@@ -1,16 +1,23 @@
 services:
   mysql:
-    image: mysql:8.0 # This specifies the MySQL version
+    image: mysql:8.0
     container_name: mysql_book_db
+    command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: Praisejah_root # Replace with a secure password
-      MYSQL_DATABASE: library_db # Replace with your desired database name
-      MYSQL_USER: Praisejah # Replace with your desired user name
-      MYSQL_PASSWORD: password # Replace with a secure password
+      MYSQL_ROOT_PASSWORD: Praisejah_root
+      MYSQL_DATABASE: library_db
+      MYSQL_USER: Praisejah
+      MYSQL_PASSWORD: password
+      MYSQL_AUTH_PLUGIN: caching_sha2_password
     ports:
-      - "3306:3306" # Maps MySQL's default port 3306 to the host machine
+      - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql # Persists data across container restarts
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   mysql_data:
