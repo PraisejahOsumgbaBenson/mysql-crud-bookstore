@@ -1,6 +1,6 @@
 import express from "express";
 import mysql from "mysql2/promise";
-import cors from 'cors';
+import cors from "cors";
 
 const app = express();
 
@@ -12,41 +12,71 @@ const db = await mysql.createConnection({
 });
 
 // ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_passwordBY 'password';
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.json("this is the backend");
 }),
+  app.get("/books", async (req, res) => {
+    const q = "SELECT * FROM library_db.book";
 
-
- 
-  app.get("/books", async (req,res)=>{
-    const q = "SELECT * FROM library_db.book"
-
-    try{
-     const [result,info] = await db.query(q)
-     return res.json(result);
-    }catch (error) {
-      res.json(error)
+    try {
+      const [result, info] = await db.query(q);
+      return res.json(result);
+    } catch (error) {
+      res.json(error);
     }
-  })
+  });
 
-app.post("/books", async (req,res)=> {
-  const q = "INSERT INTO book (`title`,`descption`,`cover_image`)VALUES(?)";
+app.post("/books", async (req, res) => {
+  const q =
+    "INSERT INTO book (`title`,`descption`,`price`,`cover_image`)VALUES(?)";
   const values = [
     req.body.title,
     req.body.descption,
+    req.body.price,
     req.body.cover_image,
   ];
 
-  try{
-    const [result, info] = await db.query(q,[values]);
+  try {
+    const [result, info] = await db.query(q, [values]);
     return res.json("book has been created successfully");
-  }catch (error){
-    res.json(error)
+  } catch (error) {
+    res.json(error);
   }
-})
+});
+
+app.delete("/books/:book_id", async (req, res) => {
+  const bookId = req.params.book_id;
+  const q = "DELETE FROM book WHERE book_id = ?";
+
+  try {
+    const [result, info] = await db.query(q, [bookId]);
+    return res.json("book has been deleted successfully");
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+app.put("/books/:book_id", async (req, res) => {
+  const bookId = req.params.book_id;
+  const q = "UPDATE book SET `title` = ?, `descption` = ?, `price` = ?, `cover_image` = ? WHERE book_id  = ?";
+
+  const values = [
+    req.body.title,
+    req.body.descption,
+    req.body.price,
+    req.body.cover_image,
+  ];
+
+  try {
+    const [result, info] = await db.query(q, [...values,bookId]);
+    return res.json("book has been updated successfully");
+  } catch (error) {
+    res.json(error);
+  }
+});
 
 app.listen(8080, () => {
   console.log("connected to backend");
