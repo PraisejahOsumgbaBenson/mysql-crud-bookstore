@@ -9,10 +9,11 @@ const app = express();
 
 // Setup MySQL connection using mysql2
 const connection = await mysql.createConnection({
-  host: "localhost",
-  user: "Praisejah",
-  password: "password",
-  database: "library_db",
+  host: process.env.MYSQL_HOST || "mysql", // "mysql" works in Docker, env var for Render
+  user: process.env.MYSQL_USER || "Praisejah",
+  password: process.env.MYSQL_PASSWORD || "password",
+  database: process.env.MYSQL_DATABASE || "library_db",
+  port: process.env.MYSQL_PORT || 3306,
 });
 
 // Initialize Drizzle ORM with the connection
