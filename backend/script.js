@@ -99,6 +99,7 @@ app.put("/books/:book_id", async (req, res) => {
 });
 
 // Start the server
-app.listen(8080, () => {
-  console.log("connected to backend");
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
